@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
+require 'pry'
+require 'webmock/rspec'
+require 'vcr'
+
+
 require 'clicksign_rb'
+
+
+VCR.configure do |config|
+  config.cassette_library_dir = "fixtures/vcr_cassettes"
+  config.hook_into :webmock
+  config.default_cassette_options = {record: :once}
+
+  if ENV['INTEGRATION_TEST'] == '1' then
+    config.ignore_request do |request|
+      true
+    end
+  end
+end
 
 
 ClicksignRb.configure do |config|

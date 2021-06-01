@@ -5,6 +5,15 @@ require 'helpers/dispatcher_spec_helper'
 RSpec.describe ClicksignRb::Dispatcher do
   include DispatcherSpecHelper
 
+  before(:each) do
+    VCR.insert_cassette 'dispatcher', record_on_error: false
+  end
+
+  after(:each) do
+    VCR.eject_cassette
+  end
+
+
   let(:dispatcher) { ClicksignRb::Dispatcher.new }
 
   describe 'post' do

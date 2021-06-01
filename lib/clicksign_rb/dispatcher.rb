@@ -15,11 +15,16 @@ module ClicksignRb
 
 
   class HttpResponseError < DispatcherError
-    attr_reader :code
+    attr_reader :code, :response
 
-    def initialize(code)
+    def initialize(code, response)
       @code = code
-      super("Request to ClickSign failed with code #{code}")
+      @response = response
+
+      super(
+        "Request to ClickSign failed with code #{code}"\
+        " and message #{response['error']}"
+      )
     end
   end
 
@@ -37,23 +42,32 @@ module ClicksignRb
       @token       = token
       @logger      = logger
       @http_debug  = http_debug
+
+      @headers = {
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/json'
+      }
     end
 
 
     def post(endpoint, body)
-      response = HTTParty.post(
+      raw_response = HTTParty.post(
         "#{@host}/#{@api_version}#{endpoint}",
+        headers:      @headers,
+        body:         JSON.generate(body),
+        logger:       @logger,
+        debug_output: @http_debug,
+
         query: {
           access_token: @token,
-          },
-        body: body,
-        logger:       @logger,
-        debug_output: @http_debug
+        }
       )
 
-      return JSON.parse(response.body) if response.success?
+      response = raw_response.to_h
 
-      raise HttpResponseError.new(response.code)
+      return response if raw_response.success?
+
+      raise HttpResponseError.new(raw_response.code, response)
     rescue DispatcherError => error
       @logger.error "Error while talking to ClickSign. #{error}"
 

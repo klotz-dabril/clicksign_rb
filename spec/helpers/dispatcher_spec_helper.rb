@@ -1,12 +1,4 @@
-#!/usr/bin/env ruby
-#
-# dispatcher_spec_helper.rb
-# Copyright (C) 2021 otto <otto@otto-Aspire-5750>
-#
-# Distributed under terms of the MIT license.
-#
-
-
+# frozen_string_literal: true
 
 module DispatcherSpecHelper
   def base_64_encoded_file
@@ -21,8 +13,8 @@ module DispatcherSpecHelper
   def test_body
     {
       document: {
-        path:             '/teste.pdf',
-        content_base64:   'data:application/pdf;base64,#{base_64_encoded_file}',
+        path:             '/test/sample.pdf',
+        content_base64:   "data:application/pdf;base64,#{base_64_encoded_file}",
         deadline_at:      (DateTime.now >> 2).strftime('%Y-%m-%dT%H:%M:%S.%L%z'),
         auto_close:       true,
         locale:           'pt-BR',
