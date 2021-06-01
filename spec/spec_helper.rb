@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
-require "clicksign_rb"
+require 'clicksign_rb'
+
+
+ClicksignRb.configure do |config|
+  config.host = 'https://sandbox.clicksign.com/api'
+  config.token = ENV.fetch 'TOKEN'
+
+  config.logger_options.out = '/dev/null'
+end
+
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
