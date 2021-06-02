@@ -17,10 +17,13 @@ end
 VCR.configure do |config|
   config.cassette_library_dir = "fixtures/vcr_cassettes"
   config.hook_into :webmock
+
   config.default_cassette_options = {
     record: :once,
     match_requests_on: [:body,:query, :uri, :method]
   }
+
+  config.filter_sensitive_data('<ACCESS_TOKEN>') { ENV.fetch 'TOKEN' }
 
   if ENV['INTEGRATION_TEST'] == '1' then
     config.ignore_request do |request|
