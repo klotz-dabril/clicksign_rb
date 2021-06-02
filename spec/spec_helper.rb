@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
 require 'webmock/rspec'
 require 'vcr'
 
@@ -8,10 +7,20 @@ require 'vcr'
 require 'clicksign_rb'
 
 
+module SpecHelper
+  def self.nowish
+    @nowish ||= DateTime.parse '2021-06-01T22:18:25-03:00'
+  end
+end
+
+
 VCR.configure do |config|
   config.cassette_library_dir = "fixtures/vcr_cassettes"
   config.hook_into :webmock
-  config.default_cassette_options = {record: :once}
+  config.default_cassette_options = {
+    record: :once,
+    match_requests_on: [:body,:query, :uri, :method]
+  }
 
   if ENV['INTEGRATION_TEST'] == '1' then
     config.ignore_request do |request|

@@ -7,7 +7,7 @@ module ClicksignRb
       def create_through_upload(
         file:,
         path:,
-        deadline_at:,
+        deadline_at: nil,
         auto_close: true,
         locale: 'pt-BR',
         sequence_enabled: false,

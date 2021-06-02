@@ -23,7 +23,7 @@ module ClicksignRb
 
       super(
         "Request to ClickSign failed with code #{code}"\
-        " and message #{response['error']}"
+        " and errors #{response['errors']}"
       )
     end
   end
@@ -69,12 +69,8 @@ module ClicksignRb
 
       raise HttpResponseError.new(raw_response.code, response)
     rescue DispatcherError => error
-      @logger.error "Error while talking to ClickSign. #{error}"
-
       raise
     rescue StandardError => error
-      @logger.error "Error while talking to ClickSign. #{error}"
-
       raise DispatcherError.new(
         'Comunication with ClickSign failed.',
         original_error: error
